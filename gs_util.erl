@@ -54,3 +54,10 @@ fat_processes(C) ->
                      proplists:get_value(current_function, L)}
                     ||{L,P} <- [{process_info(P), P} || P <- processes()]]),
     lists:reverse(lists:nthtail(length(L) - C, L)).
+
+t(Mod, Fun, Args) ->
+    dbg:stop_clear(),
+    dbg:start(),
+    dbg:tracer(),
+    dbg:p(all,c),
+    dbg:tpl(Mod, Fun, Args).
