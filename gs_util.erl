@@ -62,26 +62,9 @@ t(Mod, Fun, Args) ->
     dbg:p(all,c),
     dbg:tpl(Mod, Fun, Args).
 
-intervals(First, End, Size) ->
-    case Set = (End - First) of
-        _ when Set =< 0 ->
-            {error, bad_interval};
-        _ ->
-            get_intervals(First, Set, Set div Size, Size)
-    end.
-
-get_intervals(First, Set, Count, Size) ->
-    Interval = 
-        fun(X) -> Begin = (Size * X) + First, {Begin, Begin + (Size - 1)} end,
-    
-    Intervals = [_|T=[{_, End}|_]] = 
-        lists:reverse(lists:map(Interval, lists:seq(0, Count))),
-    
-    case (Set + 1) rem Size of 
-        0 ->
-            lists:reverse(Intervals);
-        Rem ->
-            lists:reverse([{End + 1, End + Rem} | T])
-    end.
-
-    
+intervals(Start, Stop, _) when Start > Stop ->
+    [];
+intervals(Start, Stop, N) when Start == Stop; (Start + N) > Stop ->
+    [{Start, Stop}];
+intervals(Start, Stop, N) ->
+    [{Start, Start + N} | intervals(Start + N + 1, Stop, N)].
